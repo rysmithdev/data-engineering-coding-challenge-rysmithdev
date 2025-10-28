@@ -1,0 +1,12 @@
+customer_id,first_name,last_name,email,phone,registration_date,street,city,state,zip,loyalty_status
+C001,John,Smith,john.smith@email.com,555-0101,2023-11-15,123 Main St,New York,NY,10001,gold
+C002,Sarah,Johnson,SARAH.JOHNSON@EMAIL.COM,(555) 0102,12/20/2023,456 Oak Ave,Los Angeles,CA,90001,silver
+C003,Michael,,michael.brown@email.com,555-0103,2023-12-25,789 Pine Rd,Chicago,IL,,bronze
+C004,Emily,Davis,emily.davis@email.com,,2024-01-05,321 Elm St,Houston,TX,77001,gold
+C001,John,Smith,john.smith@email.com,555-0101,2023-11-15,123 Main St,New York,NY,10001,gold
+C005,David,Wilson,david.wilson@email.com,555.0104,Jan 10 2024,654 Maple Dr,Phoenix,AZ,85001,
+C006,Jessica,Martinez,jessica.martinez@email.com,555-0105,2024-01-15,987 Cedar Ln,Philadelphia,PA,19101,silver
+C007,Robert,Anderson,robert.anderson@EMAIL.com,555-0106,2024/01/20,147 Birch Way,San Antonio,TX,78201,bronze
+C008,Jennifer,Taylor,jennifer.taylor@email.com,(555) 0107,2024-01-25,258 Spruce Ct,San Diego,CA,92101,gold
+C009,William,Thomas,william.thomas@email.com,,2024-01-28,369 Willow Pl,Dallas,TX,75201,silver
+C010,Amanda,Moore,AMANDA.MOORE@email.COM,555-0108,Feb 1 2024,741 Ash Blvd,San Jose,CA,95101,bronze

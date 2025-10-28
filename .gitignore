@@ -1,0 +1,37 @@
+# Snowflake credentials
+profiles.yml
+**/profiles.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Credentials and secrets
+*.pem
+*.key
+credentials.json
+.env
+.env.local
+
+# Candidate-specific databases (if running locally)
+candidate_*/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db

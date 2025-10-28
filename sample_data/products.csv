@@ -1,0 +1,27 @@
+product_id,product_name,category,price,supplier_id,stock_quantity,last_updated
+P001,Wireless Mouse,Electronics,29.99,S001,150,2024-01-10
+P002,USB-C Cable,Electronics,12.50,S001,300,2024-01-10
+P003,Notebook Set,Office Supplies,8.99,S002,200,01/11/2024
+P004,Desk Lamp,Electronics,45.00,S003,,2024-01-12
+P005,Coffee Mug,Kitchen,NULL,S004,100,2024/01/13
+P006,Wireless Keyboard,Electronics,59.99,S001,75,Jan 14 2024
+P007,HDMI Cable,Electronics,15.75,S001,250,2024-01-15
+P008,Office Chair,Furniture,199.99,S005,25,2024-01-16
+P009,Pen Pack (12ct),Office Supplies,6.50,S002,400,2024-01-17
+P010,Water Bottle,Kitchen,18.99,S004,180,01-18-2024
+P001,Wireless Mouse,Electronics,29.99,S001,150,2024-01-10
+P011,Desk Organizer,Office Supplies,24.99,S002,,2024-01-19
+P012,Monitor Stand,Electronics,NULL,S003,50,2024/01/20
+P013,Sticky Notes,Office Supplies,4.99,S002,500,2024-01-21
+P014,Laptop Stand,Electronics,89.99,S003,35,Jan 22 2024
+P015,Desk Mat,Office Supplies,32.50,S002,120,2024-01-23
+P016,Wireless Headphones,Electronics,129.99,S001,45,2024-01-24
+P017,Stapler,Office Supplies,9.99,S002,200,01/25/2024
+P018,Filing Cabinet,Furniture,299.99,S005,,2024-01-26
+P019,Webcam,Electronics,79.99,S001,60,2024/01/27
+P020,Whiteboard,Office Supplies,49.99,S002,80,Jan 28 2024
+P021,Desk Calendar,Office Supplies,12.99,S002,150,2024-01-29
+P022,USB Hub,Electronics,34.99,S001,100,2024-01-30
+P023,Bookshelf,Furniture,NULL,S005,20,01-31-2024
+P024,Paper Clips,Office Supplies,3.99,S002,600,2024-02-01
+P025,Travel Mug,Kitchen,22.99,S004,,2024/02/02
