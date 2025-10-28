@@ -1,0 +1,195 @@
+Data Quality Assessment
+Prepared By: Ryan Smith
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Database		SOURCES
+Schema			TEST_DATA
+Table Name		CUSTOMER
+
+	Concern				Duplicate CUSTOMER_ID values discovered.  Specifically, "C001" has two rows.
+		
+	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+		
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
+						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
+						Instead, I have opted to assign a Row Number based on the Registration Date, which keeps only the most-recently registered record
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				EMAIL values are in mixed cases, some using all uppercase and some using lowercase
+		
+	Potential Impact	Inconsistent display of customer information in downstream tables and reports
+		
+	Resolution			Snowflake's LOWER() function can resolve the inconsistency and cast all to the same case
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				PHONE values are presented in multiple differing formats, such as XXX-XXXX, (XXX) XXXX, and XXX.XXXX
+		
+	Potential Impact	Inconsistent display of customer information in downstream tables and reports, potential errors with casting
+		
+	Resolution			Snowflake's REGEXP_REPLACE function can remove all non-numeric characters, leaving only the numbers.  
+						If necessary, the field could also be reformatted as XXX-XXXX or any other format after.
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				REGISTRATION_DATE date values are presented in multiple differing formats, such as YYYY-MM-DD and MM/DD/YYYY
+		
+	Potential Impact	Many of these formats cannot be natively cast to the DATE type, which can lead to serious issues in downstream processing
+		
+	Resolution			Snowflake's TRY_TO_CAST function can "test" multiple formats to see which is able to convert successfully.  
+						We can group them together using COALESCE to create a unified testing function:
+						
+						COALESCE(
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MON DD YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY-MM-DD'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MM/DD/YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY/MM/DD')
+						)
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				NULL values found in PHONE, ZIP, and LOYALTY_STATUS
+		
+	Potential Impact	Potential problems in downstream tables if those values are expected to be present
+		
+	Resolution			A value for ZIP can potentially be determined by looking up the other Address Fields in an address registry	
+						Values for PHONE and LOYALTY_STATUS cannot be determined from the data present and may need remediation from client, if needed
+
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				REGISTRATION_DATE stored as VARCHAR column type
+		
+	Potential Impact	Should take note to avoid issues during ETL design
+		
+	Resolution			Cast values to DATE during ETL process						
+----------------------------------------------------------------------------------------------------------------------------------------------------------					
+Database		SOURCES
+Schema			TEST_DATA
+Table Name		ORDERS
+
+	Concern				One row includes the column headers as a data row
+		
+	Potential Impact	Errant data in table
+		
+	Resolution			If we can assume the first column, order_id, should always be numeric, we can remove any non-numeric order_id values as a WHERE clause
+						Otherwise, we can simply remove any rows where order_id = "order_id" as a WHERE clause
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				Column names are missing, using generic C# indentifiers
+		
+	Potential Impact	Makes data lineage more difficult to trace and leads to confusing values in downstream processes
+		
+	Resolution			Rename columns as part of ETL process, using values from the errant column headers row (see above)
+	------------------------------------------------------------------------------------------------------------------------------------------------------	
+	Concern				Duplicate order_id (C1) values discovered.  Specifically, "1001" and "1011" have two rows.
+		
+	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+		
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
+						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
+						Instead, I have opted to assign a Row Number based on the Order Date, which keeps only the most-recently ordered record
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				order_date (C3) date values are presented in multiple differing formats, such as YYYY-MM-DD and MM/DD/YYYY
+		
+	Potential Impact	Many of these formats cannot be natively cast to the DATE type, which can lead to serious issues in downstream processing
+		
+	Resolution			Snowflake's TRY_TO_CAST function can "test" multiple formats to see which is able to convert successfully.  
+						We can group them together using COALESCE to create a unified testing function:
+						
+						COALESCE(
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MON DD YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY-MM-DD'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MM/DD/YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY/MM/DD')
+						)						
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				order_total (C4) values include the word "NULL"
+		
+	Potential Impact	Potential runtime errors, since VARCHAR values cannot be cast into numeric formats
+		
+	Resolution			Snowflake's TRY_CAST function can set any non-numeric field to NULL 
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				NULL values found in order_total (C4) and status (C5)
+		
+	Potential Impact	Potential problems in downstream tables if those values are expected to be present
+		
+	Resolution			Values for these fields cannot be determined from the data present and may need remediation from client, if needed
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				order_date and order_total stored as VARCHAR column type
+		
+	Potential Impact	Should take note to avoid issues during ETL design
+		
+	Resolution			Cast order_date values to DATE and order_total values to NUMBER during ETL process
+	------------------------------------------------------------------------------------------------------------------------------------------------------	
+	Concern				All Customer IDs were found in the Customers table
+		
+	Potential Impact	If any were missing, could have impacts during the joining of the tables in the ETL process
+		
+	Resolution			Since all values were accounted for, no actions needed at this time	
+----------------------------------------------------------------------------------------------------------------------------------------------------------					
+Database		SOURCES
+Schema			TEST_DATA
+Table Name		PRODUCTS
+
+	Concern				Duplicate PRODUCT_ID values discovered.  Specifically, "P001" has two rows.
+		
+	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+		
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
+						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
+						Instead, I have opted to assign a Row Number based on the Last Updated Date, which keeps only the most-recently updated record
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				PRICE values include the word "NULL"
+		
+	Potential Impact	Potential runtime errors, since VARCHAR values cannot be cast into numeric formats
+		
+	Resolution			Snowflake's TRY_CAST function can set any non-numeric field to NULL
+	------------------------------------------------------------------------------------------------------------------------------------------------------					
+	Concern				LAST_UPDATED date values are presented in multiple differing formats, such as YYYY-MM-DD and MM/DD/YYYY
+		
+	Potential Impact	Many of these formats cannot be natively cast to the DATE type, which can lead to serious issues in downstream processing
+		
+	Resolution			Snowflake's TRY_TO_CAST function can "test" multiple formats to see which is able to convert successfully.  
+						We can group them together using COALESCE to create a unified testing function:
+						
+						COALESCE(
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MON DD YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY-MM-DD'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'MM/DD/YYYY'),
+						  TRY_TO_DATE(REGISTRATION_DATE, 'YYYY/MM/DD')
+						)	
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				NULL values found in PRICE and STOCK_QUANTITY	
+		
+	Potential Impact	Potential problems in downstream tables if those values are expected to be present
+		
+	Resolution			Values for these fields cannot be determined from the data present and may need remediation from client, if needed
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				PRICE and LAST_UPDATED stored as VARCHAR column type
+		
+	Potential Impact	Should take note to avoid issues during ETL design
+		
+	Resolution			Cast LAST_UPDATED values to DATE and PRICE values to NUMBER during ETL process		
+----------------------------------------------------------------------------------------------------------------------------------------------------------					
+Database		SOURCES
+Schema			TEST_DATA
+Table Name		ORDER_ITEMS	
+
+	Concern				Duplicate ORDER_ITEM_ID values discovered.  Specifically, "OI001" has two rows.
+		
+	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+		
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
+						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
+						Instead, I have opted to assign a Row Number based on the Order ID, since no date-based field is available
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				All Product and Order IDs were found in the Orders and Products tables, respectively
+		
+	Potential Impact	If any were missing, could have impacts during the joining of the tables in the ETL process
+		
+	Resolution			Since all values were accounted for, no actions needed at this time
+	------------------------------------------------------------------------------------------------------------------------------------------------------	
+	Concern				NULL values found in UNIT_PRICE and DISCOUNT_PERCENT	
+		
+	Potential Impact	Potential problems in downstream tables if those values are expected to be present
+		
+	Resolution			Values for these fields cannot be determined from the data present and may need remediation from client, if needed
+						DISCOUNT_PERCENT may be inferred to be 0 when null, but that should be confirmed by subject-matter experts
+	------------------------------------------------------------------------------------------------------------------------------------------------------
+	Concern				DISCCOUNT_PERCENT is currently stored as an integer
+		
+	Potential Impact	May be unintuive/unexpected for downstream processing
+		
+	Resolution			Consider casting to a decimal-based NUMBER, e.g. .05 instead of 5								
+----------------------------------------------------------------------------------------------------------------------------------------------------------							
