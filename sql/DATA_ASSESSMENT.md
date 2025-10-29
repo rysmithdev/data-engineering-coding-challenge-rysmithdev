@@ -8,11 +8,12 @@ Table Name		CUSTOMER
 
 	Concern				Duplicate CUSTOMER_ID values discovered.  Specifically, "C001" has two rows.
 		
-	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+	Potential Impact	Possible duplication of data in downstream tables, possible errors in calculations due to multiplying effects
 		
-	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
-						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
-						Instead, I have opted to assign a Row Number based on the Registration Date, which keeps only the most-recently registered record
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY or SELECT DISTINCT.  	
+						However, if this table was very large or if the rows were not perfect duplicates, this could be problematic
+						We can get around this issue using window functions, such as RANK and ROW_NUMBER
+						For the purposes of this exercise, I have elected to use SELECT DISTINCT
 	------------------------------------------------------------------------------------------------------------------------------------------------------
 	Concern				EMAIL values are in mixed cases, some using all uppercase and some using lowercase
 		
@@ -66,7 +67,7 @@ Table Name		ORDERS
 	Resolution			If we can assume the first column, order_id, should always be numeric, we can remove any non-numeric order_id values as a WHERE clause
 						Otherwise, we can simply remove any rows where order_id = "order_id" as a WHERE clause
 	------------------------------------------------------------------------------------------------------------------------------------------------------
-	Concern				Column names are missing, using generic C# indentifiers
+	Concern				Column names are missing, using generic C# identifiers
 		
 	Potential Impact	Makes data lineage more difficult to trace and leads to confusing values in downstream processes
 		
@@ -74,11 +75,12 @@ Table Name		ORDERS
 	------------------------------------------------------------------------------------------------------------------------------------------------------	
 	Concern				Duplicate order_id (C1) values discovered.  Specifically, "1001" and "1011" have two rows.
 		
-	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+	Potential Impact	Possible duplication of data in downstream tables, possible errors in calculations due to multiplying effects
 		
-	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
-						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
-						Instead, I have opted to assign a Row Number based on the Order Date, which keeps only the most-recently ordered record
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY or SELECT DISTINCT.  	
+						However, if this table was very large or if the rows were not perfect duplicates, this could be problematic
+						We can get around this issue using window functions, such as RANK and ROW_NUMBER
+						For the purposes of this exercise, I have elected to use SELECT DISTINCT
 	------------------------------------------------------------------------------------------------------------------------------------------------------					
 	Concern				order_date (C3) date values are presented in multiple differing formats, such as YYYY-MM-DD and MM/DD/YYYY
 		
@@ -124,11 +126,12 @@ Table Name		PRODUCTS
 
 	Concern				Duplicate PRODUCT_ID values discovered.  Specifically, "P001" has two rows.
 		
-	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+	Potential Impact	Possible duplication of data in downstream tables, possible errors in calculations due to multiplying effects
 		
-	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
-						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
-						Instead, I have opted to assign a Row Number based on the Last Updated Date, which keeps only the most-recently updated record
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY or SELECT DISTINCT.  	
+						However, if this table was very large or if the rows were not perfect duplicates, this could be problematic
+						We can get around this issue using window functions, such as RANK and ROW_NUMBER
+						For the purposes of this exercise, I have elected to use SELECT DISTINCTT
 	------------------------------------------------------------------------------------------------------------------------------------------------------
 	Concern				PRICE values include the word "NULL"
 		
@@ -168,11 +171,12 @@ Table Name		ORDER_ITEMS
 
 	Concern				Duplicate ORDER_ITEM_ID values discovered.  Specifically, "OI001" has two rows.
 		
-	Potential Impact	Possible duplicatation of data in downstream tables, possible errors in calculations due to multiplying effects
+	Potential Impact	Possible duplication of data in downstream tables, possible errors in calculations due to multiplying effects
 		
-	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY.  	
-						However, if this table were very large or if the rows were not perfect duplicates, this could be problematic
-						Instead, I have opted to assign a Row Number based on the Order ID, since no date-based field is available
+	Resolution			Since the rows are perfect duplicates, we could resolve by using a GROUP BY or SELECT DISTINCT.  	
+						However, if this table was very large or if the rows were not perfect duplicates, this could be problematic
+						We can get around this issue using window functions, such as RANK and ROW_NUMBER
+						For the purposes of this exercise, I have elected to use SELECT DISTINCT
 	------------------------------------------------------------------------------------------------------------------------------------------------------
 	Concern				All Product and Order IDs were found in the Orders and Products tables, respectively
 		
@@ -189,7 +193,7 @@ Table Name		ORDER_ITEMS
 	------------------------------------------------------------------------------------------------------------------------------------------------------
 	Concern				DISCCOUNT_PERCENT is currently stored as an integer
 		
-	Potential Impact	May be unintuive/unexpected for downstream processing
+	Potential Impact	May be unexpected for downstream processing
 		
 	Resolution			Consider casting to a decimal-based NUMBER, e.g. .05 instead of 5								
 ----------------------------------------------------------------------------------------------------------------------------------------------------------							
